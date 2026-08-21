@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강서초등학교 레트로 아케이드 퀴즈</title>
+    <!-- Pixel & Retro Font Loading -->
+    <link href="https://fonts.googleapis.com/css2?family=Neo+Dunggeunmo&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: #0d0221;
+            color: #00ffcc;
+            font-family: 'Neo Dunggeunmo', 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 30%, #2b0938 0%, #0d0221 70%),
+                linear-gradient(rgba(255, 0, 128, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 128, 0.1) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        .arcade-container {
+            width: 100%;
+            max-width: 680px;
+            background: #180e29;
+            border: 6px solid #ff007f;
+            border-radius: 20px;
+            box-shadow: 
+                0 0 20px #ff007f,
+                0 0 50px rgba(255, 0, 127, 0.4),
+                inset 0 0 30px rgba(0, 255, 204, 0.2);
+            padding: 25px;
+            position: relative;
+            margin: 20px;
+        }
+
+        .screen {
+            background: #05010a;
+            border: 4px solid #00ffcc;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 
+                inset 0 0 15px rgba(0, 255, 204, 0.5),
+                0 0 15px rgba(0, 255, 204, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .arcade-title {
+            text-align: center;
+            font-size: 26px;
+            color: #fff;
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #ff007f,
+                0 0 20px #ff007f,
+                0 0 40px #ff007f;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            animation: neonGlow 1.5s infinite alternate;
+        }
+
+        @keyframes neonGlow {
+            from { text-shadow: 0 0 5px #fff, 0 0 10px #ff007f, 0 0 20px #ff007f; }
+            to { text-shadow: 0 0 10px #fff, 0 0 20px #ff007f, 0 0 35px #ff007f, 0 0 50px #ff007f; }
+        }
+
+        .hacker-char-img {
+            width: 160px;
+            height: auto;
+            border: 3px solid #00ff22;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 255, 34, 0.8);
+            background: #000;
+            margin: 10px 0 15px 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ffe600;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 8px #ffe600;
+        }
+
+        .time-attack-panel {
+            background: rgba(255, 234, 0, 0.1);
+            border: 2px solid #ffea00;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .timer-display {
+            background: #000;
+            border: 2px solid #ffea00;
+            color: #ffea00;
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 10px rgba(255, 234, 0, 0.5);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .btn-arcade {
+            background: linear-gradient(180deg, #ff007f 0%, #b30059 100%);
+            color: #ffffff;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-family: 'Neo Dunggeunmo', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 
+                0 6px 0 #660033,
+                0 0 15px rgba(255, 0, 127, 0.6);
+            transition: all 0.1s ease;
+            text-shadow: 2px 2px 0px #000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-arcade:hover {
+            background: linear-gradient(180deg, #ff3399 0%, #d6006e 100%);
+            box-shadow: 
+                0 6px 0 #660033,
+                0 0 25px rgba(255, 0, 127, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .btn-arcade:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 2px 0 #660033,
+                0 0 10px rgba(255, 0, 127, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(180deg, #00d2ff 0%, #007799 100%);
+            box-shadow: 0 6px 0 #004455, 0 0 15px rgba(0, 210, 255, 0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(180deg, #ff4136 0%, #991b14 100%);
+            box-shadow: 0 6px 0 #550f0b, 0 0 15px rgba(255, 65, 54, 0.5);
+        }
+
+        .btn-purple {
+            background: linear-gradient(180deg, #a000ff 0%, #550080 100%);
+            box-shadow: 0 6px 0 #33004d, 0 0 15px rgba(160, 0, 255, 0.5);
+        }
+
+        /* 해커 버튼 및 초록색 글리치 효과 추가 */
+        .btn-hacker {
+            background: #000;
+            border: 3px solid #00ff22;
+            box-shadow: 0 6px 0 #003307, 0 0 15px rgba(0, 255, 34, 0.8);
+            color: #00ff22;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+            color: #00ff22;
+            text-shadow: 0 0 8px #00ff22;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 #005500;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 #00ffaa;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim2 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(12px, 9999px, 5px, 0); transform: skew(0.3deg); }
+            10% { clip: rect(32px, 9999px, 38px, 0); transform: skew(0.8deg); }
+            20% { clip: rect(78px, 9999px, 92px, 0); transform: skew(0.1deg); }
+            30% { clip: rect(14px, 9999px, 20px, 0); transform: skew(0.5deg); }
+            40% { clip: rect(65px, 9999px, 10px, 0); transform: skew(0.2deg); }
+            50% { clip: rect(2px, 9999px, 80px, 0); transform: skew(0.9deg); }
+            60% { clip: rect(45px, 9999px, 22px, 0); transform: skew(0.4deg); }
+            70% { clip: rect(90px, 9999px, 50px, 0); transform: skew(0.6deg); }
+            80% { clip: rect(10px, 9999px, 70px, 0); transform: skew(0.1deg); }
+            90% { clip: rect(55px, 9999px, 30px, 0); transform: skew(0.7deg); }
+            100% { clip: rect(3px, 9999px, 60px, 0); transform: skew(0.3deg); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(40px, 9999px, 15px, 0); transform: skew(0.5deg); }
+            15% { clip: rect(80px, 9999px, 5px, 0); transform: skew(0.2deg); }
+            30% { clip: rect(20px, 9999px, 65px, 0); transform: skew(0.9deg); }
+            45% { clip: rect(95px, 9999px, 30px, 0); transform: skew(0.4deg); }
+            60% { clip: rect(10px, 9999px, 85px, 0); transform: skew(0.1deg); }
+            75% { clip: rect(50px, 9999px, 40px, 0); transform: skew(0.8deg); }
+            90% { clip: rect(70px, 9999px, 20px, 0); transform: skew(0.3deg); }
+            100% { clip: rect(5px, 9999px, 90px, 0); transform: skew(0.6deg); }
+        }
+
+        .btn-god-disabled {
+            background: linear-gradient(180deg, #666666 0%, #333333 100%);
+            box-shadow: 0 6px 0 #111111, 0 0 5px rgba(255, 255, 255, 0.1);
+            color: #888888;
+            cursor: not-allowed;
+            border-color: #555555;
+            text-shadow: none;
+        }
+
+        .btn-god-active {
+            background: linear-gradient(180deg, #ffea00 0%, #b3a400 100%);
+            box-shadow: 0 6px 0 #665d00, 0 0 20px rgba(255, 234, 0, 0.8);
+            color: #000;
+            font-weight: bold;
+            border-color: #ffffff;
+            text-shadow: none;
+            animation: godGlow 1s infinite alternate;
+        }
+
+        @keyframes godGlow {
+            from { box-shadow: 0 6px 0 #665d00, 0 0 15px rgba(255, 234, 0, 0.6); }
+            to { box-shadow: 0 6px 0 #665d00, 0 0 30px rgba(255, 234, 0, 1); }
+        }
+
+        .question-card {
+            background: rgba(0, 255, 204, 0.05);
+            border: 2px dashed #00ffcc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .question-title {
+            color: #ffe600;
+            font-size: 16px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 5px #ffe600;
+            text-align: left;
+        }
+
+        .lyrics-box {
+            background: rgba(255, 0, 127, 0.1);
+            border-left: 4px solid #ff007f;
+            padding: 12px 15px;
+            margin: 10px 0;
+            line-height: 1.8;
+            color: #ffffff;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: #000;
+            border: 2px solid #00ffcc;
+            color: #00ffcc;
+            font-family: 'Neo Dunggeunmo', monospace;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.3);
+        }
+
+        input[type="text"]:focus {
+            border-color: #ff007f;
+            box-shadow: 0 0 12px rgba(255, 0, 127, 0.8);
+            color: #fff;
+        }
+
+        .result-screen {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .score-display {
+            font-size: 32px;
+            color: #ffe600;
+            text-shadow: 0 0 15px #ffe600;
+            margin: 15px 0;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-bar button {
+            flex: 1;
+        }
+
+        .difficulty-badge {
+            background: #ff007f;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            box-shadow: 0 0 5px #ff007f;
+        }
+
+        .final-quiz-card {
+            background: rgba(255, 234, 0, 0.1);
+            border: 3px solid #ffea00;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255, 234, 0, 0.4);
+            margin-top: 15px;
+        }
+
+        .final-quiz-title {
+            color: #ffea00;
+            font-size: 20px;
+            text-shadow: 0 0 10px #ffea00;
+            margin-bottom: 15px;
+        }
+
+        .final-btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .final-btn-group button {
+            flex: 1;
+            padding: 12px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="arcade-container">
+    <div class="screen">
+        <h1 class="arcade-title">🕹️ 강서초 QUIZ 🕹️</h1>
+
+        <!-- 메뉴 화면 -->
+        <div id="menu-screen">
+            <p class="subtitle">PRESS START / 난이도를 선택하세요</p>
+
+            <!-- 타임어택 선택형 UI 패널 (클리어 한사람만 표시) -->
+            <div id="ta-panel" class="time-attack-panel hidden">
+                <div style="color: #ffea00; font-size: 14px; margin-bottom: 8px;">⚡ TIME ATTACK MODE ⚡</div>
+                <button id="ta-toggle-btn" class="btn-arcade" style="justify-content: center; padding: 8px 15px; margin: 0 auto; font-size: 14px;" onclick="toggleTimeAttack()">
+                    타임어택 시작 [ OFF ]
+                </button>
+                <div id="best-time-text" style="color: #00ffcc; font-size: 13px; margin-top: 8px;">BEST RECORD: --.--s</div>
+            </div>
+
+            <div class="menu-grid">
+                <button class="btn-arcade" onclick="startQuiz('easy')">
+                    <span id="btn-easy-text">STAGE 1. EASY (쉬움)</span>
+                    <span class="difficulty-badge">LV 1</span>
+                </button>
+                <button class="btn-arcade btn-secondary" onclick="startQuiz('normal')">
+                    <span id="btn-normal-text">STAGE 2. NORMAL (보통)</span>
+                    <span class="difficulty-badge">LV 2</span>
+                </button>
+                <button class="btn-arcade btn-danger" onclick="startQuiz('hard')">
+                    <span id="btn-hard-text">STAGE 3. HARD (어려움)</span>
+                    <span class="difficulty-badge">LV 3</span>
+                </button>
+                <button class="btn-arcade btn-purple" onclick="startQuiz('very_hard')">
+                    <span id="btn-vhard-text">STAGE 4. VERY HARD (최상)</span>
+                    <span class="difficulty-badge">LV 4</span>
+                </button>
+                <!-- 글리치 애니메이션이 들어간 해커 버튼 -->
+                <button class="btn-arcade btn-hacker" onclick="startQuiz('hacker')">
+                    <span class="glitch-text" id="btn-hacker-text" data-text="STAGE 5. HACKER (해커)">STAGE 5. HACKER (해커)</span>
+                    <span class="difficulty-badge" style="background:#000; color:#00ff22; border: 1px solid #00ff22;">LV MAX</span>
+                </button>
+                <button id="god-btn" class="btn-arcade btn-god-disabled" onclick="startQuiz('god')">
+                    <span id="god-btn-text">STAGE 6. GOD (🔒 잠금)</span>
+                    <span class="difficulty-badge" id="god-badge" style="background:#333; color:#888;">LV GOD</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 퀴즈 진행 화면 -->
+        <div id="quiz-screen" class="hidden">
+            <div id="live-timer" class="timer-display hidden">⏱️ TIME: 0.00s</div>
+            <div id="quiz-content"></div>
+            
+            <div class="action-bar">
+                <button class="btn-arcade" onclick="checkAnswers()">[ A ] 정답 제출</button>
+                <button class="btn-arcade btn-danger" onclick="resetGame()">[ B ] 타이틀로</button>
+            </div>
+        </div>
+
+        <!-- 찐막 퀴즈 UI 화면 -->
+        <div id="final-quiz-screen" class="hidden">
+            <div class="final-quiz-card">
+                <div style="font-size:12px; color:#ffea00; margin-bottom:5px;">[ ⚡ FINAL SECRET QUIZ ⚡ ]</div>
+                <div class="final-quiz-title">당신은 강서초등학교를 사랑하십니까?</div>
+                <div class="final-btn-group">
+                    <button class="btn-arcade" onclick="answerFinalQuiz(true)">네</button>
+                    <button class="btn-arcade btn-danger" onclick="answerFinalQuiz(false)">아니요</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div id="result-screen" class="hidden">
+            <div class="result-screen">
+                <h2 style="color: #00ffcc; text-shadow: 0 0 10px #00ffcc;">STAGE CLEAR!</h2>
+                <div id="score-text" class="score-display">0 / 0</div>
+                <p id="rank-text" style="color: #fff; font-size: 18px; margin-bottom: 20px;"></p>
+                <p id="time-record-text" style="color: #ffea00; font-size: 16px; margin-bottom: 20px;"></p>
+                <button class="btn-arcade" onclick="resetGame()" style="width: 100%;">RETRY (다시 하기)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentDifficulty = '';
+    let currentHackerQ = null;
+    let godQuestions = [];
+
+    // 타임어택 관련 변수
+    let isTimeAttackActive = false;
+    let isTimerRunning = false;
+    let accumulatedTime = 0; 
+    let startTime = 0;
+    let timerInterval = null;
+    let currentSessionTime = 0;
+    let bestTime = null;
+
+    let clearedStages = {
+        easy: false,
+        normal: false,
+        hard: false,
+        very_hard: false,
+        hacker: false,
+        god: false,
+        finalCompleted: false
+    };
+
+    function toggleTimeAttack() {
+        isTimeAttackActive = !isTimeAttackActive;
+        const btn = document.getElementById('ta-toggle-btn');
+        if (isTimeAttackActive) {
+            btn.innerHTML = "타임어택 시작 [ ON ⚡ ]";
+            btn.style.background = "linear-gradient(180deg, #ffea00 0%, #b3a400 100%)";
+            btn.style.color = "#000";
+            accumulatedTime = 0;
+        } else {
+            btn.innerHTML = "타임어택 시작 [ OFF ]";
+            btn.style.background = "linear-gradient(180deg, #ff007f 0%, #b30059 100%)";
+            btn.style.color = "#fff";
+            pauseTimer();
+            accumulatedTime = 0;
+        }
+    }
+
+    function startOrResumeTimer() {
+        if (!isTimeAttackActive) return;
+        
+        startTime = Date.now();
+        isTimerRunning = true;
+        
+        const timerElem = document.getElementById('live-timer');
+        timerElem.classList.remove('hidden');
+
+        if (timerInterval) clearInterval(timerInterval);
+
+        timerInterval = setInterval(() => {
+            const now = Date.now();
+            currentSessionTime = accumulatedTime + (now - startTime) / 1000;
+            timerElem.innerText = `⏱️ TIME: ${currentSessionTime.toFixed(2)}s`;
+        }, 50);
+    }
+
+    function pauseTimer() {
+        if (isTimerRunning) {
+            const now = Date.now();
+            accumulatedTime += (now - startTime) / 1000;
+            isTimerRunning = false;
+        }
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    }
+
+    function setHackerText(text) {
+        const elem = document.getElementById('btn-hacker-text');
+        elem.innerText = text;
+        elem.setAttribute('data-text', text);
+    }
+
+    function updateMenuState() {
+        if (clearedStages.easy) document.getElementById('btn-easy-text').innerText = "STAGE 1. EASY (CLEAR! ✅)";
+        if (clearedStages.normal) document.getElementById('btn-normal-text').innerText = "STAGE 2. NORMAL (CLEAR! ✅)";
+        if (clearedStages.hard) document.getElementById('btn-hard-text').innerText = "STAGE 3. HARD (CLEAR! ✅)";
+        if (clearedStages.very_hard) document.getElementById('btn-vhard-text').innerText = "STAGE 4. VERY HARD (CLEAR! ✅)";
+        if (clearedStages.hacker) setHackerText("STAGE 5. HACKER (CLEAR! ✅)");
+
+        const isGodUnlocked = clearedStages.easy && clearedStages.normal && clearedStages.hard && clearedStages.very_hard && clearedStages.hacker;
+        const godBtn = document.getElementById('god-btn');
+        const godBtnText = document.getElementById('god-btn-text');
+        const godBadge = document.getElementById('god-badge');
+
+        if (isGodUnlocked) {
+            godBtn.className = "btn-arcade btn-god-active";
+            godBtnText.innerText = clearedStages.god ? "STAGE 6. GOD (CLEAR! ✅)" : "STAGE 6. GOD (신 등급)";
+            godBadge.style.background = "#000";
+            godBadge.style.color = "#ffea00";
+        } else {
+            godBtn.className = "btn-arcade btn-god-disabled";
+            godBtnText.innerText = "STAGE 6. GOD (🔒 잠금)";
+            godBadge.style.background = "#333";
+            godBadge.style.color = "#888";
+        }
+
+        const taPanel = document.getElementById('ta-panel');
+        if (clearedStages.finalCompleted) {
+            taPanel.classList.remove('hidden');
+            const bestText = document.getElementById('best-time-text');
+            if (bestTime !== null) {
+                bestText.innerText = `BEST RECORD: ${bestTime.toFixed(2)}s`;
+            } else {
+                bestText.innerText = `BEST RECORD: --.--s`;
+            }
+        } else {
+            taPanel.classList.add('hidden');
+        }
+    }
+
+    function resetAllProgress() {
+        clearedStages = {
+            easy: false,
+            normal: false,
+            hard: false,
+            very_hard: false,
+            hacker: false,
+            god: false,
+            finalCompleted: false
+        };
+        bestTime = null;
+        isTimeAttackActive = false;
+        accumulatedTime = 0;
+        document.getElementById('btn-easy-text').innerText = "STAGE 1. EASY (쉬움)";
+        document.getElementById('btn-normal-text').innerText = "STAGE 2. NORMAL (보통)";
+        document.getElementById('btn-hard-text').innerText = "STAGE 3. HARD (어려움)";
+        document.getElementById('btn-vhard-text').innerText = "STAGE 4. VERY HARD (최상)";
+        setHackerText("STAGE 5. HACKER (해커)");
+        updateMenuState();
+    }
+
+    function getSimilarity(s1, s2) {
+        let str1 = s1.replace(/\s+/g, '').toLowerCase();
+        let str2 = s2.replace(/\s+/g, '').toLowerCase();
+        if (str1 === str2) return 1.0;
+        if (str1.length === 0 || str2.length === 0) return 0.0;
+
+        let pairs1 = getNGrams(str1, 2);
+        let pairs2 = getNGrams(str2, 2);
+        let union = pairs1.length + pairs2.length;
+        let intersection = 0;
+
+        for (let i = 0; i < pairs1.length; i++) {
+            for (let j = 0; j < pairs2.length; j++) {
+                if (pairs1[i] === pairs2[j]) {
+                    intersection++;
+                    pairs2.splice(j, 1);
+                    break;
+                }
+            }
+        }
+        return (2.0 * intersection) / union;
+    }
+
+    function getNGrams(str, num) {
+        let nGrams = [];
+        for (let i = 0; i < str.length - num + 1; i++) {
+            nGrams.push(str.substring(i, i + num));
+        }
+        return nGrams;
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    const hackerPool = [
+        {
+            title: "Q. 캐릭터가 태어난 장소(어디의 깨끗한 물)는 어디인가요?",
+            check: v => v.replace(/\s+/g,'').includes("에코델타시티")
+        },
+        {
+            title: "Q. 이 캐릭터는 무엇에서 태어난 어떤 친구인가요?",
+            check: v => v.includes("물방울") || (v.includes("물") && v.includes("친구"))
+        },
+        {
+            title: "Q. 캐릭터 머리 위에 있는 새싹이 의미하는 2가지(OO과 OO)는?",
+            check: v => (v.includes("꿈") && v.includes("희망"))
+        },
+        {
+            title: "Q. 캐릭터는 친구들과 함께 무엇을 하며 밝은 미래를 만들어가나요? (2가지)",
+            check: v => (v.includes("배우") && v.includes("성장"))
+        },
+        {
+            title: "Q. 빈칸 채우기: \"( ? )의 깨끗한 물에서 태어난 ( ? ) 친구입니다.\"",
+            check: v => v.includes("에코델타") && v.includes("물방울")
+        },
+        {
+            title: "Q. 빈칸 채우기: \"머리 위의 새싹은 자연과 함께 자라는 강서초등학교 학생들의 ( ? )과 ( ? )을 의미합니다.\"",
+            check: v => v.includes("꿈") && v.includes("희망")
+        },
+        {
+            title: "Q. 캐릭터의 탄생 배경과 역할을 요약 서술하세요.",
+            check: v => getSimilarity(v, "에코델타시티의 깨끗한 물에서 태어난 물방울 친구입니다 머리 위의 새싹은 자연과 함께 자라는 강서초등학교 학생들의 꿈과 희망을 의미합니다") >= 0.45
+        },
+        {
+            title: "Q. 캐릭터가 만들어가는 미래는 어떤 미래인가요?",
+            check: v => v.replace(/\s+/g,'').includes("밝은미래") || v.includes("밝은")
+        }
+    ];
+
+    function startQuiz(difficulty) {
+        if (difficulty === 'god') {
+            const isGodUnlocked = clearedStages.easy && clearedStages.normal && clearedStages.hard && clearedStages.very_hard && clearedStages.hacker;
+            if (!isGodUnlocked) {
+                alert("🔒 쉬움, 보통, 어려움, 최상, 해커 등급을 모두 완벽히 클리어해야 열립니다!");
+                return;
+            }
+        }
+
+        currentDifficulty = difficulty;
+        document.getElementById('menu-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        document.getElementById('final-quiz-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.add('hidden');
+        
+        const quizContent = document.getElementById('quiz-content');
+
+        if (isTimeAttackActive) {
+            startOrResumeTimer();
+        } else {
+            document.getElementById('live-timer').classList.add('hidden');
+        }
+
+        if (difficulty === 'easy') {
+            quizContent.innerHTML = `
+                <div style="text-align:center; color:#ff007f; margin-bottom:15px; font-weight:bold;">[ STAGE 1 : EASY ]</div>
+                <div class="question-card"><p class="question-title">Q1. 강서초등학교의 교목은?</p><input type="text" id="q1" placeholder="답을 입력하세요" autocomplete="off"></div>
+                <div class="question-card"><p class="question-title">Q2. 강서초등학교의 교화는?</p><input type="text" id="q2" placeholder="답을 입력하세요" autocomplete="off"></div>
+                <div class="question-card"><p class="question-title">Q3. 개교 기념일 연도는?</p><input type="text" id="q3" placeholder="답을 입력하세요" autocomplete="off"></div>
+            `;
+        } else if (difficulty === 'normal') {
+            quizContent.innerHTML = `
+                <div style="text-align:center; color:#00d2ff; margin-bottom:15px; font-weight:bold;">[ STAGE 2 : NORMAL ]</div>
+                <div class="lyrics-box">밝은 아침 노래가 머무른 곳<br>햇살 속에 <b>( 1 )</b>들이 자라나는 곳<br>푸른 물결 맑게 흐르는곳<br>우정의 마음을 함께 나누네<br>맘과맘이 하나로 여기에 모여<br>생각 나누며 꿈을 키우고<br>작은손에 <b>( 2 )</b>의 별을 안고서<br>오늘을 힘차게 걸어가요</div>
+                <div class="question-card"><p class="question-title">빈칸 ( 1 ) 번:</p><input type="text" id="q1" placeholder="답을 입력하세요" autocomplete="off"></div>
+                <div class="question-card"><p class="question-title">빈칸 ( 2 ) 번:</p><input type="text" id="q2" placeholder="답을 입력하세요" autocomplete="off"></div>
+            `;
+        } else if (difficulty === 'hard') {
+            quizContent.innerHTML = `
+                <div style="text-align:center; color:#ff4136; margin-bottom:15px; font-weight:bold;">[ STAGE 3 : HARD ]</div>
+                <div class="lyrics-box">밝은 아침 <b>( 1 )</b>가 머무른 곳<br>햇살 속에 꿈들이 자라나는 곳<br><b>( 2 )</b> 물결 맑게 흐르는곳<br>우정의 마음을 함께 나누네<br>맘과맘이 하나로 여기에 모여<br>생각 나누며 꿈을 키우고<br>작은손에 희망의 별을 안고서<br>오늘을 힘차게 걸어가요<br>강서초등학교 <b>( 3 )</b> 마음 모여<br>배움으로 자르고 <b>( 4 )</b>으로 커가요<br>강서초등학교 희망의 <b>( 5 )</b> 밝혀 가는곳<br>우리는 자랑스런 강서 어린이</div>
+                <div class="question-card"><p class="question-title">( 1 )번 빈칸:</p><input type="text" id="q1" placeholder="답을 입력하세요" autocomplete="off"></div>
+                <div class="question-card"><p class="question-title">( 2 )번 빈칸:</p><input type="text" id="q2" placeholder="답을 입력하세요" autocomplete="off"></div>
+                <div class="question-card"><p class="question-title">( 3 )번 빈칸:</p><input type="text" id="q3" placeholder="답을 입력하세요" autocomplete="off"></div>
+                <div class="question-card"><p class="question-title">( 4 )번 빈칸:</p><input type="text" id="q4" placeholder="답을 입력하세요" autocomplete="off"></div>
+                <div class="question-card"><p class="question-title">( 5 )번 빈칸:</p><input type="text" id="q5" placeholder="답을 입력하세요" autocomplete="off"></div>
+            `;
+        } else if (difficulty === 'very_hard') {
+            quizContent.innerHTML = `
+                <div style="text-align:center; color:#a000ff; margin-bottom:15px; font-weight:bold;">[ STAGE 4 : VERY HARD ]</div>
+                <div class="question-card"><p class="question-title">Q. 강서초등학교의 도로명 주소(위치)는 어디일까요?</p><input type="text" id="q1" placeholder="답을 입력하세요" autocomplete="off"></div>
+            `;
+        } else if (difficulty === 'hacker') {
+            currentHackerQ = hackerPool[Math.floor(Math.random() * hackerPool.length)];
+            quizContent.innerHTML = `
+                <div style="text-align:center; color:#00ff22; margin-bottom:15px; font-weight:bold;">[ STAGE 5 : HACKER - CHARACTER SPECIAL ]</div>
+                <div class="question-card">
+                    <p class="question-title">${currentHackerQ.title}</p>
+                    <input type="text" id="q1" placeholder="답을 입력하세요" autocomplete="off">
+                </div>
+            `;
+        } else if (difficulty === 'god') {
+            const godPool = [
+                { title: '[쉬움] 강서초등학교의 교목은 무엇인가요?', check: v => v.replace(/\s+/g,'') === '자작나무' },
+                { title: '[쉬움] 강서초등학교의 교화는 무엇인가요?', check: v => v.replace(/\s+/g,'') === '능소화' },
+                { title: '[보통] 교가 가사 중 "햇살 속에 ( ? )들이 자라나는 곳"의 빈칸은?', check: v => v.replace(/\s+/g,'') === '꿈' },
+                { title: '[어려움] 교가 가사 중 "강서초등학교 ( ? ) 마음 모여"의 빈칸은?', check: v => v.replace(/\s+/g,'') === '밝은' },
+                { title: '[최상] 강서초등학교의 도로명 주소 전체는?', check: v => v.replace(/\s+/g,'') === '부산강서구에코델타2로94' },
+                { title: '[해커] 캐릭터가 태어난 장소(어디의 깨끗한 물)는 어디인가요?', check: v => v.replace(/\s+/g,'').includes("에코델타시티") },
+                { title: '[해커] 캐릭터 머리 위의 새싹이 의미하는 2가지(OO과 OO)는?', check: v => (v.includes("꿈") && v.includes("희망")) }
+            ];
+
+            godQuestions = shuffleArray(godPool).slice(0, 5);
+
+            let html = `<div style="text-align:center; color:#ffea00; margin-bottom:15px; font-weight:bold;">[ STAGE 6 : GOD MODE - RANDOM MIX 5 ]</div>`;
+            godQuestions.forEach((q, idx) => {
+                html += `
+                    <div class="question-card">
+                        <p class="question-title">Q${idx + 1}. ${q.title}</p>
+                        <input type="text" id="gq${idx}" placeholder="답을 입력하세요" autocomplete="off">
+                    </div>
+                `;
+            });
+            quizContent.innerHTML = html;
+        }
+    }
+
+    function checkAnswers() {
+        pauseTimer();
+
+        let score = 0;
+        let total = 0;
+
+        if (currentDifficulty === 'easy') {
+            total = 3;
+            if ((document.getElementById('q1').value || '').trim().replace(/\s+/g, '') === '자작나무') score++;
+            if ((document.getElementById('q2').value || '').trim() === '능소화') score++;
+            if ((document.getElementById('q3').value || '').trim().includes('2026')) score++;
+            if (score === total) clearedStages.easy = true;
+
+        } else if (currentDifficulty === 'normal') {
+            total = 2;
+            if ((document.getElementById('q1').value || '').trim() === '꿈') score++;
+            if ((document.getElementById('q2').value || '').trim() === '희망') score++;
+            if (score === total) clearedStages.normal = true;
+
+        } else if (currentDifficulty === 'hard') {
+            total = 5;
+            if ((document.getElementById('q1').value || '').trim() === '노래') score++;
+            if ((document.getElementById('q2').value || '').trim() === '푸른') score++;
+            if ((document.getElementById('q3').value || '').trim() === '밝은') score++;
+            if ((document.getElementById('q4').value || '').trim() === '사랑') score++;
+            if ((document.getElementById('q5').value || '').trim() === '빛') score++;
+            if (score === total) clearedStages.hard = true;
+
+        } else if (currentDifficulty === 'very_hard') {
+            total = 1;
+            if ((document.getElementById('q1').value || '').trim().replace(/\s+/g, '') === '부산강서구에코델타2로94') score++;
+            if (score === total) clearedStages.very_hard = true;
+
+        } else if (currentDifficulty === 'hacker') {
+            total = 1;
+            const userAns = (document.getElementById('q1').value || '').trim();
+            if (currentHackerQ && currentHackerQ.check(userAns)) {
+                score = 1;
+                clearedStages.hacker = true;
+            }
+
+        } else if (currentDifficulty === 'god') {
+            total = godQuestions.length;
+            godQuestions.forEach((q, idx) => {
+                const val = (document.getElementById(`gq${idx}`).value || '').trim();
+                if (q.check(val)) score++;
+            });
+            if (score === total) clearedStages.god = true;
+        }
+
+        if (currentDifficulty === 'god' && score === total && !clearedStages.finalCompleted) {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('final-quiz-screen').classList.remove('hidden');
+        } else {
+            showResult(score, total);
+        }
+    }
+
+    function answerFinalQuiz(isLove) {
+        document.getElementById('final-quiz-screen').classList.add('hidden');
+
+        if (isLove) {
+            alert("축하합니다. 당신은 모든 단계를 클리어 하셨습니다.");
+            clearedStages.finalCompleted = true;
+            showResult(godQuestions.length, godQuestions.length);
+        } else {
+            alert("와! 태초 마을입니다");
+            resetAllProgress();
+            resetGame();
+        }
+    }
+
+    function showResult(score, total) {
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        document.getElementById('score-text').innerText = `SCORE: ${score} / ${total}`;
+        
+        const rankText = document.getElementById('rank-text');
+        const timeRecordText = document.getElementById('time-record-text');
+
+        timeRecordText.innerText = "";
+
+        if (score === total) {
+            if (currentDifficulty === 'god') {
+                rankText.innerText = "⚡ GOD CLEAR! 전 난이도 정복자! 당신은 강서초의 신입니다! ⚡";
+                rankText.style.color = "#ffea00";
+            } else {
+                rankText.innerText = "🏆 PERFECT! 완벽하게 클리어했습니다! 🏆";
+                rankText.style.color = "#00ffcc";
+            }
+
+            if (isTimeAttackActive) {
+                timeRecordText.innerText = `⏱️ 누적 타임: ${currentSessionTime.toFixed(2)}초`;
+                if (bestTime === null || currentSessionTime < bestTime) {
+                    bestTime = currentSessionTime;
+                }
+            }
+        } else if (score > 0) {
+            rankText.innerText = "👍 GOOD! 조금만 더 도전해보세요!";
+            rankText.style.color = "#ffe600";
+        } else {
+            rankText.innerText = "👾 GAME OVER! 다시 도전해보세요!";
+            rankText.style.color = "#ff007f";
+        }
+    }
+
+    function resetGame() {
+        pauseTimer();
+        updateMenuState();
+        document.getElementById('menu-screen').classList.remove('hidden');
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('final-quiz-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.add('hidden');
+    }
+
+    updateMenuState();
+</script>
+
+</body>
+</html>
